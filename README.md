@@ -1,51 +1,82 @@
-# Integrate LDAP with Liferay
+# How to Integrate LDAP with Liferay DXP 7.4
 
 ## Overview
-This guide provides step-by-step instructions to integrate **Liferay DXP 7.4** with an **LDAP server** for user authentication and synchronization.
+This guide provides a detailed, beginner-friendly approach to integrating **Liferay DXP 7.4** with an **LDAP server** for authentication and user management. It explains each step, highlights common pitfalls, and compares LDAP filters to help you optimize your configuration.
+
+---
+
+## Table of Contents
+1. [Prerequisites](#prerequisites)
+2. [Step-by-Step Configuration](#step-by-step-configuration)
+   - [Connecting Liferay to LDAP](#1-connect-liferay-to-ldap)
+   - [Setting Up User Mapping](#2-user-mapping)
+   - [Configuring Group Mapping](#3-group-mapping)
+   - [Testing the Connection](#4-testing-the-connection)
+3. [LDAP Filters Explained](#ldap-filters-explained)
+4. [Troubleshooting](#troubleshooting)
 
 ---
 
 ## Prerequisites
-- Access to Liferay Control Panel as an administrator.
-- LDAP server details (e.g., `Base DN`, `Provider URL`, and credentials).
-- Liferay instance (DXP 7.4).
+Before you begin, ensure you have the following:
+- Access to the Liferay Control Panel as an administrator.
+- LDAP server details:
+  - **Base Provider URL**: Address of your LDAP server (e.g., `ldap://your-ldap-server:389`).
+  - **Base DN**: The distinguished name to use as the base (e.g., `dc=example,dc=com`).
+  - **Principal**: A user with access to query LDAP (e.g., `cn=admin,dc=example,dc=com`).
+  - **Credentials**: The password for the principal user.
+- Knowledge of LDAP object classes and attributes (e.g., `sAMAccountName`, `userPrincipalName`, etc.).
 
 ---
 
-## Steps
+## Step-by-Step Configuration
 
-### 1. Configure LDAP in Liferay
-1. Go to **Control Panel > Instance Settings > LDAP**.
-2. Enable the **LDAP Configuration**.
-3. Add a new LDAP server with the following details:
-   - **Base Provider URL**: `ldap://your-server:389`
-   - **Base DN**: `dc=yourdomain,dc=com`
-   - **Principal**: `cn=admin,dc=yourdomain,dc=com`
-   - **Credentials**: Your admin password.
+### **1. Connect Liferay to LDAP**
+1. Log in to Liferay as an administrator.
+2. Navigate to **Control Panel > Instance Settings > LDAP**.
+3. Enable the LDAP configuration.
+4. Add a new LDAP server and fill in the following details:
+   - **Base Provider URL**: 
+     ```
+     ldap://your-ldap-server:389
+     ```
+   - **Base DN**:
+     ```
+     dc=example,dc=com
+     ```
+   - **Principal**: 
+     ```
+     cn=admin,dc=example,dc=com
+     ```
+   - **Credentials**: The password for the principal.
 
-### 2. User Mapping
-1. Set the user mappings as follows:
-   - **Screen Name**: `sAMAccountName`
-   - **Email Address**: `userPrincipalName`
-   - **Password**: `unicodePwd`
-   - **Full Name**: `cn`
-
-### 3. Group Mapping
-1. Configure group mappings as needed:
-   - **Group Name**: `cn`
-   - **Import Filter**: `(objectClass=group)`
-
-### 4. Test the Connection
-1. Use the **Test LDAP Connection** button to verify connectivity.
-2. Test **LDAP Users** and **LDAP Groups** to ensure proper synchronization.
+5. Save the configuration and proceed to testing.
 
 ---
 
-## Troubleshooting
-- Check the logs in Liferay for any LDAP-related errors.
-- Ensure the LDAP server is accessible and the credentials are correct.
+### **2. User Mapping**
+Configure how Liferay maps its users to LDAP attributes:
+1. Go to **User Mapping**.
+2. Map the following attributes:
+   - **Screen Name**: `sAMAccountName` (or another unique identifier).
+   - **Email Address**: `userPrincipalName` or `mail`.
+   - **Password**: `unicodePwd` (ensure your LDAP supports this).
+   - **Full Name**: `cn`.
+   - **First Name**: `givenName`.
+   - **Last Name**: `sn`.
+
+3. Save the configuration.
 
 ---
 
-## License
-This guide is open-sourced under the MIT license.
+### **3. Group Mapping**
+Configure group synchronization if required:
+1. Go to **Group Mapping**.
+2. Map the following attributes:
+   - **Group Name**: `cn`.
+   - **Description**: `description` (optional).
+   - **Users**: `member`.
+
+3. Add an **Import Search Filter** to filter specific groups:
+   ```plaintext
+   (objectClass=group)
