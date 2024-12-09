@@ -80,3 +80,104 @@ Configure group synchronization if required:
 3. Add an **Import Search Filter** to filter specific groups:
    ```plaintext
    (objectClass=group)
+
+   
+# Testing the Connection
+
+### Test LDAP Connection
+To verify the connection between Liferay and your LDAP server:
+1. Click the **Test LDAP Connection** button in the Liferay LDAP settings.
+2. If the connection fails:
+   - Check the LDAP server address, credentials, and Base DN for accuracy.
+   - Ensure the LDAP server is reachable from the Liferay server (e.g., no firewalls blocking the connection).
+
+### Test LDAP Users
+1. Use the **Test LDAP Users** button to verify that user synchronization settings are correct.
+2. If users are not being imported, adjust the **User Import Filter**. A basic filter example is:
+   ```plaintext
+   (objectClass=person)
+   ```
+
+### Test LDAP Groups
+1. Use the **Test LDAP Groups** button to verify that group synchronization settings are correct.
+2. If groups are not being imported, adjust the **Group Import Filter**. A common filter example is:
+   ```plaintext
+   (objectClass=group)
+   ```
+
+---
+
+# Understanding LDAP Filters
+
+LDAP filters allow you to control which users and groups are imported into Liferay. Here are some common filter examples:
+
+### To Import All Users:
+```plaintext
+(objectClass=person)
+```
+
+### To Import a Specific User by Their `sAMAccountName`:
+```plaintext
+(&(objectClass=person)(sAMAccountName=username))
+```
+
+### To Optimize User Import for Active Directory:
+```plaintext
+(objectCategory=person)
+```
+
+### To Import All Groups:
+```plaintext
+(objectClass=group)
+```
+
+### To Import a Specific Group Named `employees`:
+```plaintext
+(&(objectClass=group)(cn=employees))
+```
+
+---
+
+# Troubleshooting Common Issues
+
+### 1. Connection Fails
+- Verify the **Base Provider URL**, **Base DN**, and credentials.
+- Ensure there are no firewall rules blocking the connection.
+- Check the Liferay logs for specific error messages.
+
+### 2. Users or Groups Not Syncing
+- Double-check your filters to ensure they are not too restrictive.
+- Ensure that attributes like `sAMAccountName` or `cn` exist in your LDAP schema.
+
+### 3. Authentication Issues
+- Confirm that the **Authentication Search Filter** is correctly configured. A common example:
+   ```plaintext
+   (&(objectClass=person)(sAMAccountName=@user_id@))
+   ```
+
+---
+
+# Example Use Cases
+
+### Scenario 1: Sync All Users
+**User Filter:**
+```plaintext
+(objectClass=person)
+```
+
+### Scenario 2: Sync Users in a Specific Group
+**User Filter:**
+```plaintext
+(&(objectClass=person)(memberOf=cn=employees,dc=example,dc=com))
+```
+**Group Filter:**
+```plaintext
+(objectClass=group)
+```
+
+---
+
+# License
+
+This guide is open-sourced under the MIT license. Feel free to contribute or provide suggestions!
+
