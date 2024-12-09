@@ -6,14 +6,27 @@ This guide provides a detailed, beginner-friendly approach to integrating **Life
 ---
 
 ## Table of Contents
-1. [Prerequisites](#prerequisites)
-2. [Step-by-Step Configuration](#step-by-step-configuration)
-   - [Connecting Liferay to LDAP](#1-connect-liferay-to-ldap)
-   - [Setting Up User Mapping](#2-user-mapping)
-   - [Configuring Group Mapping](#3-group-mapping)
-   - [Testing the Connection](#4-testing-the-connection)
-3. [LDAP Filters Explained](#ldap-filters-explained)
-4. [Troubleshooting](#troubleshooting)
+1. [Overview](#overview)
+2. [Prerequisites](#prerequisites)
+3. [Step-by-Step Configuration](#step-by-step-configuration)
+   - [Connect Liferay to LDAP](#connect-liferay-to-ldap)
+   - [User Mapping](#user-mapping)
+   - [Group Mapping](#group-mapping)
+   - [Testing the Connection](#testing-the-connection)
+4. [Understanding LDAP Filters](#understanding-ldap-filters)
+   - [Import All Users](#to-import-all-users)
+   - [Import Specific User by sAMAccountName](#to-import-a-specific-user-by-their-samaccountname)
+   - [Optimize User Import for Active Directory](#to-optimize-user-import-for-active-directory)
+   - [Import All Groups](#to-import-all-groups)
+   - [Import Specific Group Named Employees](#to-import-a-specific-group-named-employees)
+5. [Troubleshooting](#troubleshooting)
+   - [Connection Fails](#connection-fails)
+   - [Users or Groups Not Syncing](#users-or-groups-not-syncing)
+   - [Authentication Issues](#authentication-issues)
+6. [Example Use Cases](#example-use-cases)
+   - [Sync All Users](#scenario-1-sync-all-users)
+   - [Sync Users in a Specific Group](#scenario-2-sync-users-in-a-specific-group)
+7. [License](#license)
 
 ---
 
@@ -31,12 +44,12 @@ Before you begin, ensure you have the following:
 
 ## Step-by-Step Configuration
 
-### **1. Connect Liferay to LDAP**
+### Connect Liferay to LDAP
 1. Log in to Liferay as an administrator.
 2. Navigate to **Control Panel > Instance Settings > LDAP**.
 3. Enable the LDAP configuration.
 4. Add a new LDAP server and fill in the following details:
-   - **Base Provider URL**: 
+   - **Base Provider URL**:
      ```
      ldap://your-ldap-server:389
      ```
@@ -44,7 +57,7 @@ Before you begin, ensure you have the following:
      ```
      dc=example,dc=com
      ```
-   - **Principal**: 
+   - **Principal**:
      ```
      cn=admin,dc=example,dc=com
      ```
@@ -54,7 +67,7 @@ Before you begin, ensure you have the following:
 
 ---
 
-### **2. User Mapping**
+### User Mapping
 Configure how Liferay maps its users to LDAP attributes:
 1. Go to **User Mapping**.
 2. Map the following attributes:
@@ -69,7 +82,7 @@ Configure how Liferay maps its users to LDAP attributes:
 
 ---
 
-### **3. Group Mapping**
+### Group Mapping
 Configure group synchronization if required:
 1. Go to **Group Mapping**.
 2. Map the following attributes:
@@ -80,25 +93,27 @@ Configure group synchronization if required:
 3. Add an **Import Search Filter** to filter specific groups:
    ```plaintext
    (objectClass=group)
+   ```
 
-   
-# Testing the Connection
+---
 
-### Test LDAP Connection
+### Testing the Connection
+
+#### Test LDAP Connection
 To verify the connection between Liferay and your LDAP server:
 1. Click the **Test LDAP Connection** button in the Liferay LDAP settings.
 2. If the connection fails:
    - Check the LDAP server address, credentials, and Base DN for accuracy.
    - Ensure the LDAP server is reachable from the Liferay server (e.g., no firewalls blocking the connection).
 
-### Test LDAP Users
+#### Test LDAP Users
 1. Use the **Test LDAP Users** button to verify that user synchronization settings are correct.
 2. If users are not being imported, adjust the **User Import Filter**. A basic filter example is:
    ```plaintext
    (objectClass=person)
    ```
 
-### Test LDAP Groups
+#### Test LDAP Groups
 1. Use the **Test LDAP Groups** button to verify that group synchronization settings are correct.
 2. If groups are not being imported, adjust the **Group Import Filter**. A common filter example is:
    ```plaintext
@@ -107,7 +122,7 @@ To verify the connection between Liferay and your LDAP server:
 
 ---
 
-# Understanding LDAP Filters
+## Understanding LDAP Filters
 
 LDAP filters allow you to control which users and groups are imported into Liferay. Here are some common filter examples:
 
@@ -116,7 +131,7 @@ LDAP filters allow you to control which users and groups are imported into Lifer
 (objectClass=person)
 ```
 
-### To Import a Specific User by Their `sAMAccountName`:
+### To Import a Specific User by Their sAMAccountName:
 ```plaintext
 (&(objectClass=person)(sAMAccountName=username))
 ```
@@ -131,25 +146,25 @@ LDAP filters allow you to control which users and groups are imported into Lifer
 (objectClass=group)
 ```
 
-### To Import a Specific Group Named `employees`:
+### To Import a Specific Group Named Employees:
 ```plaintext
 (&(objectClass=group)(cn=employees))
 ```
 
 ---
 
-# Troubleshooting Common Issues
+## Troubleshooting
 
-### 1. Connection Fails
+### Connection Fails
 - Verify the **Base Provider URL**, **Base DN**, and credentials.
 - Ensure there are no firewall rules blocking the connection.
 - Check the Liferay logs for specific error messages.
 
-### 2. Users or Groups Not Syncing
+### Users or Groups Not Syncing
 - Double-check your filters to ensure they are not too restrictive.
 - Ensure that attributes like `sAMAccountName` or `cn` exist in your LDAP schema.
 
-### 3. Authentication Issues
+### Authentication Issues
 - Confirm that the **Authentication Search Filter** is correctly configured. A common example:
    ```plaintext
    (&(objectClass=person)(sAMAccountName=@user_id@))
@@ -157,7 +172,7 @@ LDAP filters allow you to control which users and groups are imported into Lifer
 
 ---
 
-# Example Use Cases
+## Example Use Cases
 
 ### Scenario 1: Sync All Users
 **User Filter:**
@@ -177,7 +192,6 @@ LDAP filters allow you to control which users and groups are imported into Lifer
 
 ---
 
-# License
-
+## License
 This guide is open-sourced under the MIT license. Feel free to contribute or provide suggestions!
 
