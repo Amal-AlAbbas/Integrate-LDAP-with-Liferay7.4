@@ -26,7 +26,6 @@ This guide provides a detailed, beginner-friendly approach to integrating **Life
 6. [Example Use Cases](#example-use-cases)
    - [Sync All Users](#scenario-1-sync-all-users)
    - [Sync Users in a Specific Group](#scenario-2-sync-users-in-a-specific-group)
-7. [License](#license)
 
 ---
 
@@ -49,7 +48,7 @@ Before you begin, ensure you have the following:
 2. Navigate to **Control Panel > Instance Settings > LDAP**.
 3. Enable the LDAP configuration.
 4. Add a new LDAP server and fill in the following details:
-   - **Base Provider URL**:
+   - **Base Provider URL**: 
      ```
      ldap://your-ldap-server:389
      ```
@@ -57,7 +56,7 @@ Before you begin, ensure you have the following:
      ```
      dc=example,dc=com
      ```
-   - **Principal**:
+   - **Principal**: 
      ```
      cn=admin,dc=example,dc=com
      ```
@@ -189,9 +188,4 @@ LDAP filters allow you to control which users and groups are imported into Lifer
 ```plaintext
 (objectClass=group)
 ```
-
----
-
-## License
-This guide is open-sourced under the MIT license. Feel free to contribute or provide suggestions!
 
